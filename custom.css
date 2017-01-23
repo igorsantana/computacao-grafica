@@ -1,0 +1,33 @@
+.button-black.button-outline{
+    background-color: transparent;
+    border-color: black;  
+    color: black;
+  }
+
+  .top-5{
+    margin-top: 5%;
+  }
+
+  .flex-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .canvas-obj{
+    border: 1px solid black;
+    width: 640px;
+    height: 480px;
+  }
+
+  .min-100{
+    min-width: 100%;
+    min-height: 15%;
+  }
+
+  div.help {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+  }

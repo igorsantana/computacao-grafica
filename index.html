@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trabalho de Computação Gráfica</title>
+  <link rel="stylesheet" href="milligram.min.css">
+  <link rel="stylesheet" href="custom.css">
+</head>
+<body>
+  <style>
+  </style>
+  <div class="container">
+    <div class="row top-5" >
+      <div class="column">
+        <button class="button-black button-outline"> Clear </button>    
+      </div>
+      <div class="column">
+        <button class="button-black button-outline"> Rotação </button>
+      </div>
+      <div class="column">
+        <button class="button-black button-outline"> Escala </button>
+      </div>
+      <div class="column">
+        <button class="button-black button-outline"> Translação </button>
+      </div>
+      <div class="column">
+        <button class="button-black button-outline"> Zoom Extend </button>
+      </div>
+    </div>
+    <div class="row top-5 help" >
+      <p id="helper">
+      </p>
+    </div>
+    <div class="row">
+      <div class="column column-20">
+          <button class="button-black button-outline min-100 draw" id="reta"> Reta </button>
+          <button class="button-black button-outline min-100 draw" id="retangulo"> Retângulo </button>
+          <button class="button-black button-outline min-100 draw" id="triangulo"> Triângulo </button>
+      </div>
+      <div class="column column-80 flex-center">
+        <canvas id="canvas" class="canvas-obj">
+        </canvas>
+      </div>
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+</html>
