@@ -11,10 +11,22 @@ function getTipo(tamanho){
 }
 
 function criaObjeto(arr, tipo){
-  var obj = { points: [[], []],
-              getPoints(){ return this.points },
-              tipo: tipo,
-              addPoints(point) { this.points[0].push(point[0]); this.points[1].push(point[1]); } }
+  var obj = { 
+    points: [[], []],
+    getPoints: function(){ 
+      return this.points 
+    },
+    tipo: tipo,
+    addPoints: function(point) {
+      this.points[0].push(point[0])
+      this.points[1].push(point[1]) 
+    },
+    setPoints: function(newPoints){
+      this.points.length = 0
+      this.points = newPoints
+
+    }
+  }
 
   var objCreate = Object.create(obj)
   
@@ -29,7 +41,7 @@ function desenhoCanvas(objeto, ctx){
     var p2 = { x: matrix[0][1], y: matrix[1][1] }
     ctx.moveTo(p1.x, p1.y)
     ctx.lineTo(p2.x, p2.y)
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "black"
     ctx.fill()
     ctx.stroke()
   }
@@ -53,7 +65,7 @@ function desenhoCanvas(objeto, ctx){
     objeto.addPoints([p1.x, p2.y])
     objeto.addPoints([p2.x, p1.y])
     points = objeto.getPoints()
-    
+
     var p3 = { x: points[0][2], y: points[1][2] }
     var p4 = { x: points[0][3], y: points[1][3] }
 
