@@ -9,40 +9,66 @@
 <body>
   <style>
   </style>
-  <div class="container">
+  <div class="container" style="padding: 0;">
     <div class="row top-5" >
       <div class="column">
-        <button class="button-black button-outline" id="clear"> Clear </button>    
+        <button class="button-black btn-color" id="clear-btn" style="width: 100%; height: 50px;"> Clear </button>    
       </div>
       <div class="column">
-        <button class="button-black button-outline" id="rotacao"> Rotação </button>
+        <button class="button-black btn-color" id="rotacao-btn" style="width: 100%; height: 50px;"> Rotação </button>
       </div>
       <div class="column">
-        <button class="button-black button-outline" id="escala"> Escala </button>
+        <button class="button-black btn-color" id="escala-btn" style="width: 100%; height: 50px;"> Escala </button>
       </div>
       <div class="column">
-        <button class="button-black button-outline" id="translacao"> Translação </button>
+        <button class="button-black btn-color" id="translacao-btn" style="width: 100%; height: 50px;"> Translação </button>
       </div>
       <div class="column">
-        <button class="button-black button-outline"> Zoom Extend </button>
+        <button class="button-black btn-color" id="zoomextend-btn" style="width: 100%; height: 50px;"> Zoom Extend </button>
       </div>
     </div>
-    <div class="row top-5 help" >
-      <p id="helper">
+    <p id="helper">
       </p>
-    </div>
     <div class="row">
       <div class="column column-20">
-          <button class="button-black button-outline min-100 draw" id="reta"> Reta </button>
-          <button class="button-black button-outline min-100 draw" id="retangulo"> Retângulo </button>
-          <button class="button-black button-outline min-100 draw" id="triangulo"> Triângulo </button>
+          <button class="button-black btn-color min-100 draw" id="reta"> Reta </button>
+          <button class="button-black btn-color min-100 draw" id="retangulo"> Retângulo </button>
+          <button class="button-black btn-color min-100 draw" id="triangulo"> Triângulo </button>
       </div>
-      <div class="column column-80 flex-center">
+      <div class="column column-60">
         <canvas id="canvas" class="canvas-obj">
         </canvas>
       </div>
+      <div class="column column-20 help" >
+      
+      <div class="entrada" id="rotacao-div">
+        <label for=""> Ângulo da rotação :  </label>
+        <p style="margin-bottom: 5%;">(em graus)</p>
+        <input type="number" id="angulo">
+        <button type="button" class="button-black btn-color aplicar " id="rotacao">Aplicar</button>
+      </div>
+      <div class="entrada" id="escala-div">
+        <label for=""> Fatores de Escala: </label>
+        
+        <label for="sx">Sx</label>
+        <input type="number" id="sx" style="margin-bottom: 0;">
+        <label for="sy">Sy</label>
+        <input type="number" id="sy">
+        <button type="button" class="button-black btn-color aplicar" id="escala">Aplicar</button>
+      </div>
+      <div class="entrada" id="translacao-div">
+        <label for=""> Fatores de Deslocamento: </label>
+        
+        <label for="dx">Dx</label>
+        <input type="number" id="dx" style="margin-bottom: 0;">
+        <label for="dy">Dy</label>
+        <input type="number" id="dy">
+        <button type="button" class="button-black btn-color aplicar" id="translacao">Aplicar</button>
+      </div>
+    </div>
     </div>
   </div>
+  
   <script src="math.js"></script>
   <script src="aux.js"></script>
   <script src="index.js"></script>

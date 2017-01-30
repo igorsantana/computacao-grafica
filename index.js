@@ -1,10 +1,12 @@
 var drawButtons       = document.getElementsByClassName("draw")
+var entrada           = document.getElementsByClassName("aplicar")
 var canvas            = document.getElementById('canvas')
 var ctx               = canvas.getContext('2d')
-var clear             = document.getElementById('clear')
-var translacao        = document.getElementById('translacao')
-var escala            = document.getElementById('escala')
-var rotacao           = document.getElementById('rotacao')
+var clearBtn          = document.getElementById('clear-btn')
+var translacaoBtn     = document.getElementById('translacao-btn')
+var escalaBtn         = document.getElementById('escala-btn')
+var rotacaoBtn        = document.getElementById('rotacao-btn')
+var zoomExtendBtn     = document.getElementById('zoomextend-btn')
 var botoes            = {}
 canvas.width          = 640
 canvas.height         = 480
@@ -14,64 +16,116 @@ var objIncompleto     = []
 var objCompletos      = []
 var tipoObj           = ''
 
-for(var i = 0; i < drawButtons.length; i++ ) botoes[drawButtons[i].id] = drawButtons[i];
+for(var i = 0; i < drawButtons.length; i++ ){
+   botoes[drawButtons[i].id] = drawButtons[i];
+}
 
 canvas.addEventListener('click', getCursorPosition)
 botoes['reta'].addEventListener('click', function(){ desenha('reta') })
 botoes['retangulo'].addEventListener('click', function(){ desenha('retangulo') })
 botoes['triangulo'].addEventListener('click', function(){ desenha('triangulo') })
-clear.addEventListener('click', clearAction)
-translacao.addEventListener('click', translateAction)
-escala.addEventListener('click', escalaAction)
-rotacao.addEventListener('click', rotacaoAction)
+translacaoBtn.addEventListener('click', function(){ mostraEntrada('translacao') })
+escalaBtn.addEventListener('click', function(){ mostraEntrada('escala') })
+rotacaoBtn.addEventListener('click', function(){ mostraEntrada('rotacao') })
+clearBtn.addEventListener('click', entradaDados)
+zoomExtendBtn.addEventListener('click', entradaDados)
 
-function rotacaoAction(){
-  var angulo = 90
-  var cos = Math.cos(angulo), sen = Math.sin(angulo)
-  var rotacao = [ [cos ,sen], [ -sen, cos ] ]
-  var novosObjetos = objCompletos.map(obj => {
-      var points = obj.getPoints()
-      console.table(matrixMulti(rotacao, points))
-      obj.setPoints(matrixMulti(rotacao, points))
-      return obj
-    })
-  clearAction()
-  objCompletos = novosObjetos
+toggleBtns(false)
+
+for(var i = 0; i < entrada.length; i++){
+  entrada[i].addEventListener('click', entradaDados )
+}
+
+function toggleBtns(bool){
+  var btns = document.querySelectorAll('button[id$="-btn"]')
+  btns.forEach(function(btn) { btn.disabled = !bool})
+}
+
+
+function mostraEntrada(entrada){
+  escondeEntradas()
+  document.getElementById(entrada + '-div').style = "display: block;"
+}
+
+function escondeEntradas(){
+  ['rotacao', 'escala', 'translacao'].forEach(function(valor){
+      document.getElementById(valor + '-div').style = "display: none;"
+  })
+}
+
+function entradaDados(event){
+  var acao = event.srcElement.id
+  var acaoWithoutBtn = acao.split('-')[0]
+  if(acao == 'clear-btn'){
+    escondeEntradas()
+    
+    return action(acaoWithoutBtn, null)
+  }
+  if(acao == 'zoomextend-btn') {
+    escondeEntradas()
+    return action(acaoWithoutBtn, null)
+  }
+  if(acao == 'translacao'){
+    var dx = document.getElementById('dx').value
+    var dy = document.getElementById('dy').value
+    document.getElementById('dx').value = '``'
+    document.getElementById('dy').value = ''
+    return action(acao, { dx: dx, dy: dy} )
+  }
+  if(acao == 'rotacao'){
+    var angulo = document.getElementById('angulo').value
+    document.getElementById('angulo').value = ''
+    return action(acao, { angulo: angulo })
+  }
+  if(acao == 'escala'){
+    var sx = document.getElementById('sx').value
+    var sy = document.getElementById('sy').value
+    document.getElementById('sx').value = ''
+    document.getElementById('sy').value = ''
+    return action(acao, { sx: sx, sy: sy })
+  }
+}
+
+function action(acao, entrada){
+  printaHelp('')
+  if(acao == 'clear'){
+    objCompletos.length = 0
+    toggleBtns(false)
+    return clearAction()
+  }
+  if(acao == 'translacao'){
+    clearAction()
+    objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), parseInt(entrada.dx), parseInt(entrada.dy))))
+  }
+  if(acao == 'rotacao'){
+    clearAction()
+    var angulo = - parseInt(entrada.angulo)
+    objCompletos.forEach(obj => obj.setPoints(rotacao(obj.getPoints(), angulo)))
+  }
+  if(acao == 'escala'){
+    clearAction()
+    objCompletos.forEach(obj => obj.setPoints(escala(obj.getPoints(), parseInt(entrada.sx), parseInt(entrada.sy))))
+  }
+  if(acao == 'zoomextend'){
+    clearAction()
+    var janela = zoomExtend(objCompletos)
+    objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), - (janela.menorx), - (janela.menory))))
+    var sx = canvas.width / (janela.maiorx - janela.menorx)
+    var sy = canvas.height/ (janela.maiory - janela.menory)
+    objCompletos.forEach(obj => obj.setPoints(escala(obj.getPoints(), sx, sy)))
+    janela = zoomExtend(objCompletos)
+    var larguraJanela     = Math.abs(janela.maiorx - janela.menorx)
+    var alturaJanela      = Math.abs(janela.maiory - janela.menory)
+    var correcaoX         = (canvas.width - larguraJanela) / 2
+    var correcaoY         = (canvas.height - alturaJanela) / 2
+    objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), (correcaoX), (correcaoY))))
+  }
   objCompletos.forEach(obj => desenhaObjeto(obj))
 }
 
-function escalaAction(){
-    var sx = sy = 2
-    var translation = [ [ sx, 0], [ 0, sy] ]
-    var novosObjetos = objCompletos.map(obj => {
-      var points = obj.getPoints()
-      obj.setPoints(matrixMulti(translation, points))
-      return obj
-    })
-    clearAction()
-    objCompletos = novosObjetos
-    objCompletos.forEach(obj => desenhaObjeto(obj))
-}
-
-
-function translateAction(){
-    var dx = dy = 5
-    var novosObjetos = objCompletos.map(obj => {
-      var points = obj.getPoints()
-      var newX = points[0].map(function(x){ return x + dx })
-      var newY = points[1].map(function(y){ return y + dy })
-      obj.setPoints([newX, newY])
-      return obj
-    })
-    clearAction()
-    objCompletos = novosObjetos
-    objCompletos.forEach(obj => desenhaObjeto(obj))
-    
-}
 
 function clearAction(){
   canvas.width = canvas.width;
-  objCompletos.length = 0
   ctx.lineWidth         = "2.5";
 }
 
@@ -96,8 +150,6 @@ function desenha(objeto){
   }
 }
 
-
-
 function mouseInteraction(coord){
     if(numPontos > 0){
       numPontos--;
@@ -107,10 +159,10 @@ function mouseInteraction(coord){
       obj = criaObjeto(objIncompleto, tipoObj)
       
       desenhaObjeto(obj)
-      
+      toggleBtns(true)
       objCompletos.push(obj)
       objIncompleto.length = 0;
-      
+      printaHelp('')
     }
 }
 
@@ -134,10 +186,8 @@ function getCursorPosition(event) {
     canvasY = Math.round( canvasY * (this.height / this.offsetHeight) );
     
     mouseInteraction({ x: canvasX, y: canvasY })
-    
   }
 }
-
 
 function desenhaObjeto(objeto){
   desenhoCanvas(objeto, ctx)

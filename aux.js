@@ -24,7 +24,6 @@ function criaObjeto(arr, tipo){
     setPoints: function(newPoints){
       this.points.length = 0
       this.points = newPoints
-
     }
   }
 
