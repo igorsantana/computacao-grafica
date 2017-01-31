@@ -48,9 +48,9 @@ function rotacao(matrix, angulo){
 function zoomExtend(objects){
     return objects.reduce(function(prev, next){
         var matrix = next.getPoints()
-        var menorX  = (matrix[0].reduce(function(p, n ){  return n < p ? n : p }, 1000)) - 20
-        var maiorX  = (matrix[0].reduce(function(p, n ){  return n > p ? n : p }, 0)) + 20
-        var menorY  = (matrix[1].reduce(function(p, n ){  return n < p ? n : p }, 1000)) - 20
+        var menorX  = (matrix[0].reduce(function(p, n ){  return n < p ? n : p }, 1000))  - 20
+        var maiorX  = (matrix[0].reduce(function(p, n ){  return n > p ? n : p }, 0)) + 20 
+        var menorY  = (matrix[1].reduce(function(p, n ){  return n < p ? n : p }, 1000))  - 20
         var maiorY  = (matrix[1].reduce(function(p, n ){  return n > p ? n : p }, 0)) + 20
        
         return { menorx : (menorX < prev.menorx ? menorX : prev.menorx ), 
@@ -58,5 +58,4 @@ function zoomExtend(objects){
                  maiorx : (maiorX > prev.maiorx ? maiorX : prev.maiorx ),
                  maiory : (maiorY > prev.maiory ? maiorY : prev.maiory ) }
     }, { menorx: 1500, menory: 1500, maiorx: 0, maiory: 0 })
-
 }

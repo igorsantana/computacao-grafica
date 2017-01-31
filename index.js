@@ -58,7 +58,6 @@ function entradaDados(event){
   var acaoWithoutBtn = acao.split('-')[0]
   if(acao == 'clear-btn'){
     escondeEntradas()
-    
     return action(acaoWithoutBtn, null)
   }
   if(acao == 'zoomextend-btn') {
@@ -108,17 +107,27 @@ function action(acao, entrada){
   }
   if(acao == 'zoomextend'){
     clearAction()
-    var janela = zoomExtend(objCompletos)
-    objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), - (janela.menorx), - (janela.menory))))
-    var sx = canvas.width / (janela.maiorx - janela.menorx)
-    var sy = canvas.height/ (janela.maiory - janela.menory)
+    var janela        = zoomExtend(objCompletos),
+        dx            = - janela.menorx,
+        dy            = - janela.menory,
+        ratioJanela   = (janela.maiorx - janela.menorx) / (janela.maiory - janela.menory),
+        ratioViewport = canvas.width / canvas.height,
+        novoX         = canvas.width, 
+        novoY         = canvas.height
+    if(ratioViewport > ratioJanela){
+      novoX = canvas.height * ratioJanela
+    }
+    if(ratioJanela > ratioViewport){
+      novoY = canvas.width / ratioJanela
+    }
+    var sx  = novoX / (janela.maiorx - janela.menorx),
+        sy  = novoY / (janela.maiory - janela.menory)
+    
+    objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), dx, dy)))
     objCompletos.forEach(obj => obj.setPoints(escala(obj.getPoints(), sx, sy)))
-    janela = zoomExtend(objCompletos)
-    var larguraJanela     = Math.abs(janela.maiorx - janela.menorx)
-    var alturaJanela      = Math.abs(janela.maiory - janela.menory)
-    var correcaoX         = (canvas.width - larguraJanela) / 2
-    var correcaoY         = (canvas.height - alturaJanela) / 2
-    objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), (correcaoX), (correcaoY))))
+    var novaJanela  = zoomExtend(objCompletos)
+    objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), 0, (canvas.height - Math.floor(novaJanela.maiory)) / 2)))  
+    objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(),  (canvas.width - Math.floor(novaJanela.maiorx)) / 2, 0)))        
   }
   objCompletos.forEach(obj => desenhaObjeto(obj))
 }
@@ -162,7 +171,7 @@ function mouseInteraction(coord){
       toggleBtns(true)
       objCompletos.push(obj)
       objIncompleto.length = 0;
-      printaHelp('')
+      printaHelp('\n')
     }
 }
 
@@ -192,3 +201,36 @@ function getCursorPosition(event) {
 function desenhaObjeto(objeto){
   desenhoCanvas(objeto, ctx)
 }
+
+ // var ratioJanela   = Math.abs(janela.maiorx - janela.menorx) / Math.abs(janela.maiory - janela.menory)
+    // var ratioViewport = canvas.width / canvas.height
+    // var sx            = canvas.width / (janela.maiorx - janela.menorx)
+    // var sy            = canvas.height/ (janela.maiory - janela.menory)
+    // var umaxnovo      = (ratioJanela * (janela.maiory - janela.menory)) + janela.menorx
+    // objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), - janela.menorx, - janela.menory)))
+    // if(ratioViewport > ratioJanela){
+    //   objCompletos.forEach(function(objeto){
+    //     var pontos = objeto.getPoints()
+    //     for(var i = 0; i < pontos[0].length; i++){
+    //       var x = pontos[0][i]
+    //       var y = pontos[1][i]
+    //       var novoX = (x * sx) - (sx * janela.menorx) - ((canvas.width - umaxnovo ) / 2)
+    //       var novoY = (y * sy) - (sy * janela.menory)
+    //       objeto.changePoints(i,  novoX , novoY )
+    //     }
+    //   })
+
+    // }
+    
+
+    // objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), - (janela.menorx), - (janela.menory))))
+    
+    // objCompletos.forEach(obj => obj.setPoints(escala(obj.getPoints(), sx, sy)))
+    // if(ratioJanela > ratioViewport){
+    //   correcao = ((janela.maiorx - janela.menorx) / ratioJanela) + janela.menory
+    //   objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), 0 , (canvas.height - correcao) / 2)))
+    // }
+    // if(ratioJanela < ratioViewport){
+    //   correcao = 
+    //   objCompletos.forEach(obj => obj.setPoints(translacao(obj.getPoints(), (canvas.width - correcao) / 2 , 0)))
+    // }

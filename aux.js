@@ -24,6 +24,10 @@ function criaObjeto(arr, tipo){
     setPoints: function(newPoints){
       this.points.length = 0
       this.points = newPoints
+    },
+    changePoints(i , x, y){
+      this.points[0].splice(i, 1, x)
+      this.points[1].splice(i, 1, y)
     }
   }
 
@@ -34,6 +38,8 @@ function criaObjeto(arr, tipo){
 }
 
 function desenhoCanvas(objeto, ctx){
+  ctx.font="12px Verdana"
+
   if(objeto.tipo == 'reta'){
     var matrix = objeto.getPoints()
     var p1 = { x: matrix[0][0], y: matrix[1][0] }
